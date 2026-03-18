@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+print("🔥 FIREBASE ENV EXISTS:", os.environ.get("FIREBASE_CREDENTIALS") is not None)
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
