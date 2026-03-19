@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, collection, query, where, getDocs, doc, getDoc, addDoc, updateDoc, serverTimestamp, Timestamp, onSnapshot } from '../../config/firebase'
+import { notifyPrescriptionApproved, notifyNewPrescription, notifyConsultationCompleted } from '../../services/notificationService'
 import './ConsultationRequests.css'
 
 const MEDICINE_LIST = [
@@ -156,6 +157,14 @@ export default function ConsultationRequests() {
         status: 'accepted',
         acceptedAt: serverTimestamp()
       })
+      
+      // Send notifications
+      const doctorDoc = await getDoc(doc(db, 'users', auth.currentUser.uid))
+      const doctorName = doctorDoc.exists() ? doctorDoc.data().name : 'Doctor'
+      
+      await notifyPrescriptionApproved(currentRequest.farmerId, doctorName, currentRequest.animalId)
+      await notifyNewPrescription(currentRequest.farmerId, currentRequest.animalId)
+      await notifyConsultationCompleted(currentRequest.farmerId)
       
       alert('Prescription created successfully!')
       setShowModal(false)

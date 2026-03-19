@@ -295,6 +295,7 @@
 @media (max-width: 1024px) {
   .farmer-login-wrapper {
     padding: 1.5rem;
+    /* padding-top: 3rem; */
   }
 
   .farmer-login-container {
@@ -306,6 +307,7 @@
 @media (max-width: 768px) {
   .farmer-login-wrapper {
     padding: 1.25rem;
+     /* padding-top: 3rem; */
   }
 
   .farmer-login-container {
@@ -327,8 +329,8 @@
 @media (max-width: 640px) {
   .farmer-login-wrapper {
     padding: 1rem;
-    align-items: flex-start;
-    padding-top: 2rem;
+    align-items: center;
+    /* padding-top: 2rem; */
   }
 
   .farmer-login-container {
@@ -416,6 +418,7 @@
 @media (max-width: 480px) {
   .farmer-login-wrapper {
     padding: 0.875rem;
+    align-items: center;
     padding-top: 1.5rem;
   }
 
@@ -490,6 +493,7 @@
 @media (max-width: 375px) {
   .farmer-login-wrapper {
     padding: 0.75rem;
+    align-items: center;
     padding-top: 1rem;
   }
 

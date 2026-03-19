@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import Landing from './components/Landing'
 import FarmerRegister from './components/farmer/FarmerRegister'
 import FarmerLogin from './components/farmer/FarmerLogin'
@@ -23,6 +24,9 @@ import BuyerRegister from './components/buyer/BuyerRegister'
 import BuyerDashboard from './components/buyer/BuyerDashboard'
 import BuyerVerify from './components/buyer/BuyerVerify'
 import VetChatbot from './components/chatbot/VetChatbot'
+import VoiceExample from './components/VoiceExample'
+import { initializePushNotifications } from './services/pushNotifications'
+import { initializeNotificationScheduler } from './services/notificationScheduler'
 
 function AppContent() {
   const location = useLocation()
@@ -71,6 +75,7 @@ function AppContent() {
         <Route path="/buyer-register" element={<BuyerRegister />} />
         <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
         <Route path="/buyer-verify" element={<BuyerVerify />} />
+        <Route path="/voice-demo" element={<VoiceExample />} />
       </Routes>
       {showChatbot && <VetChatbot />}
     </>
@@ -78,6 +83,15 @@ function AppContent() {
 }
 
 function App() {
+  useEffect(() => {
+    initializePushNotifications();
+    initializeNotificationScheduler();
+    const ping = () => fetch('https://document-9lqb.onrender.com/health').catch(() => {})
+    ping()
+    const interval = setInterval(ping, 10 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, []);
+
   return (
     <Router>
       <AppContent />

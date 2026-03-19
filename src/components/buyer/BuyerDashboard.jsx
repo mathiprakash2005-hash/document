@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, signOut, collection, query, where, getDocs, doc, getDoc } from '../../config/firebase'
+import NotificationPanel from '../NotificationPanel'
 import './BuyerDashboard.css'
 
 export default function BuyerDashboard() {
@@ -9,6 +10,7 @@ export default function BuyerDashboard() {
   const [userData, setUserData] = useState(null)
   const [purchases, setPurchases] = useState([])
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
   const [stats, setStats] = useState({ total: 0, verified: 0 })
 
   useEffect(() => {
@@ -49,6 +51,7 @@ export default function BuyerDashboard() {
 
   return (
     <div className="dashboard-container">
+      <NotificationPanel userId={user?.uid} showPanel={showNotifications} setShowPanel={setShowNotifications} />
       <div className="bg-pattern"></div>
 
       <aside className={`sidebar ${showSidebar ? 'active' : ''}`}>
@@ -62,6 +65,7 @@ export default function BuyerDashboard() {
             <li><a href="#" className="nav-link active"><i className="fas fa-chart-line"></i><span>Dashboard</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => navigate('/buyer-verify')}><i className="fas fa-certificate"></i><span>Verify Certificate</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => document.getElementById('historySection')?.scrollIntoView({ behavior: 'smooth' })}><i className="fas fa-shopping-bag"></i><span>Purchase History</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => { setShowNotifications(true); setShowSidebar(false) }}><i className="fas fa-bell"></i><span>Notifications</span></a></li>
             <li><a href="#" className="nav-link" onClick={handleLogout}><i className="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
           </ul>
         </nav>

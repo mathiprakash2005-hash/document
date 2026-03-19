@@ -130,22 +130,23 @@
 
 .menu-toggle {
   position: fixed;
-  top: 1rem;
+  top: 3rem;
   left: 1rem;
   z-index: 1000;
   background: var(--primary-gradient);
   border: none;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   cursor: pointer;
   display: none;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   transition: transform 0.2s ease;
+  touch-action: manipulation;
 }
 
 .menu-toggle:active {
@@ -619,6 +620,7 @@ td {
 
 /* Tablet Landscape & Below */
 @media (max-width: 1024px) {
+  
   .sidebar {
     transform: translateX(-100%);
   }
@@ -634,16 +636,21 @@ td {
 
   .menu-toggle {
     display: flex;
+    
+  }
+   .logo {                        /* ← ADD THIS */
+    padding-top: 1rem;
+    padding-left: 4.5rem;
   }
 
   .header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-    padding-top: 1rem;
+    padding-top: 5rem;
   }
   .header-left h2 {
-    padding-left: 60px; /* ← ADD THIS */
+    padding-left: 0; /* ← ADD THIS */
   }
 
   .header-right {
@@ -997,13 +1004,7 @@ td {
     font-size: 0.95rem;
   }
 
-  .menu-toggle {
-    width: 44px;
-    height: 44px;
-    font-size: 1.125rem;
-  }
-
-  .sidebar {
+.sidebar {
     width: 260px;
   }
 

@@ -272,7 +272,9 @@
 /* Tablet Landscape */
 @media (max-width: 1024px) {
   .buyer-login-body {
-    padding: 20px;
+    align-items: center;
+    padding: 30px;
+    padding-top: 4rem;
   }
 
   .login-container {

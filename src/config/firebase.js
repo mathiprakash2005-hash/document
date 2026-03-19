@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth'
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, query, where, serverTimestamp, updateDoc, Timestamp, deleteDoc, onSnapshot, runTransaction } from 'firebase/firestore'
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, query, where, serverTimestamp, updateDoc, Timestamp, deleteDoc, onSnapshot, runTransaction, orderBy, limit } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDSinGJdNw52fXfnUUwNWKYJmpOLs4DasA",
@@ -35,5 +35,7 @@ export {
   Timestamp,
   deleteDoc,
   onSnapshot,
-  runTransaction
+  runTransaction,
+  orderBy,
+  limit
 }

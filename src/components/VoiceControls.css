@@ -1,0 +1,151 @@
+.voice-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.voice-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 2px solid #007bff;
+  background: white;
+  color: #007bff;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.voice-btn:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.voice-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.voice-btn.active {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  animation: pulse 1.5s infinite;
+}
+
+.voice-btn.active:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+.voice-icon {
+  font-size: 16px;
+}
+
+.voice-icon.recording {
+  animation: recording-pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+  }
+}
+
+@keyframes recording-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.voice-error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid #f5c6cb;
+  margin-left: 10px;
+  max-width: 200px;
+}
+
+.voice-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.voice-controls.unavailable {
+  opacity: 0.6;
+}
+
+.voice-controls.unavailable .voice-status {
+  color: #dc3545;
+  background: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .voice-controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .voice-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-width: 70px;
+  }
+  
+  .voice-error {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+}
+
+/* Integration with existing forms */
+.form-group .voice-controls {
+  margin-top: 5px;
+}
+
+.input-with-voice {
+  position: relative;
+}
+
+.input-with-voice .voice-controls {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.input-with-voice input {
+  padding-right: 100px;
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, collection, query, where, getDocs, addDoc, doc, getDoc, serverTimestamp, runTransaction } from '../../config/firebase'
+import { notifyAnimalSold, notifyPurchaseConfirmed, notifyPaymentReceived, notifyCertificateReady, notifyOrderReady } from '../../services/notificationService'
 import './BuyerVerify.css'
 
 export default function BuyerVerify() {
@@ -108,6 +109,13 @@ export default function BuyerVerify() {
           purchaseDate: serverTimestamp()
         })
       })
+      
+      // Send notifications
+      await notifyAnimalSold(certificate.farmerId, certificate.animalId, buyerName)
+      await notifyPaymentReceived(certificate.farmerId, certificate.animalId, certificate.quantity)
+      await notifyPurchaseConfirmed(currentUser.uid, certificate.animalId, certificate.quantity)
+      await notifyCertificateReady(currentUser.uid, certificate.animalId)
+      await notifyOrderReady(currentUser.uid, certificate.animalId)
 
       showMsg('Purchase approved successfully! Redirecting to dashboard...', 'success')
       setTimeout(() => navigate('/buyer-dashboard'), 2000)

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { auth, db, collection, query, where, getDocs, addDoc, serverTimestamp } from '../../config/firebase'
+import { auth, db, collection, query, where, getDocs, addDoc, serverTimestamp, doc, getDoc } from '../../config/firebase'
+import { notifyNewConsultationRequest } from '../../services/notificationService'
 import './DoctorConsultation.css'
 
 function DoctorConsultation() {
@@ -106,6 +107,18 @@ function DoctorConsultation() {
       })
 
       console.log('Request submitted successfully with ID:', docRef.id)
+      
+      // Notify all doctors
+      const doctorsQuery = query(collection(db, 'users'), where('role', '==', 'doctor'))
+      const doctorsSnapshot = await getDocs(doctorsQuery)
+      
+      const farmerDoc = await getDoc(doc(db, 'users', user.uid))
+      const farmerName = farmerDoc.exists() ? farmerDoc.data().name : 'Farmer'
+      
+      for (const doctorDoc of doctorsSnapshot.docs) {
+        await notifyNewConsultationRequest(doctorDoc.id, farmerName, formData.animalId)
+      }
+      
       setSuccess(true)
       setFormData({ animalId: '', urgency: '', symptoms: '' })
       setTimeout(() => {

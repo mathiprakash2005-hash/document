@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, signOut, doc, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from '../../config/firebase'
+import NotificationPanel from '../NotificationPanel'
 import './FarmerDashboard.css'
 
 function FarmerDashboard() {
@@ -13,16 +14,13 @@ function FarmerDashboard() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showConsultModal, setShowConsultModal] = useState(false)
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
   const [formData, setFormData] = useState({ species: '', animalId: '', status: 'Healthy', lastTreatment: '' })
   const [consultData, setConsultData] = useState({ animalId: '', urgency: '', symptoms: '' })
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-      if (!currentUser) {
-        navigate('/farmer-login')
-        return
-      }
-
+      if (!currentUser) { navigate('/farmer-login'); return }
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid))
       if (userDoc.exists() && userDoc.data().role === 'farmer') {
         setUser(currentUser)
@@ -34,7 +32,6 @@ function FarmerDashboard() {
         navigate('/farmer-login')
       }
     })
-
     return () => unsubscribe()
   }, [navigate])
 
@@ -42,15 +39,10 @@ function FarmerDashboard() {
     const q = query(collection(db, 'animals'), where('farmerId', '==', uid))
     const snapshot = await getDocs(q)
     const animalsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-    
+
     for (let animal of animalsList) {
-      const treatmentQuery = query(
-        collection(db, 'treatments'),
-        where('farmerId', '==', uid),
-        where('animalId', '==', animal.animalId)
-      )
+      const treatmentQuery = query(collection(db, 'treatments'), where('farmerId', '==', uid), where('animalId', '==', animal.animalId))
       const treatmentSnap = await getDocs(treatmentQuery)
-      
       if (!treatmentSnap.empty) {
         const treatments = treatmentSnap.docs.map(doc => doc.data())
         const activeTreatment = treatments.find(t => {
@@ -62,8 +54,6 @@ function FarmerDashboard() {
           }
           return false
         })
-        
-        // Update status in database if needed
         if (activeTreatment && animal.status !== 'Withdrawal') {
           await updateDoc(doc(db, 'animals', animal.id), { status: 'Withdrawal' })
           animal.status = 'Withdrawal'
@@ -72,44 +62,31 @@ function FarmerDashboard() {
           animal.status = 'Healthy'
         }
       } else if (animal.status === 'Withdrawal') {
-        // No treatments found but status is Withdrawal, reset to Healthy
         await updateDoc(doc(db, 'animals', animal.id), { status: 'Healthy' })
         animal.status = 'Healthy'
       }
     }
-    
-    const salesQuery = query(collection(db, 'purchases'), where('farmerId', '==', uid))
-    const salesSnap = await getDocs(salesQuery)
-    const soldCount = salesSnap.size
-    
+
+    const salesSnap = await getDocs(query(collection(db, 'purchases'), where('farmerId', '==', uid)))
     animalsList.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0))
-    
     setAnimals(animalsList)
     setStats({
       total: animalsList.length,
       healthy: animalsList.filter(a => a.status === 'Healthy').length,
       treatment: animalsList.filter(a => a.status === 'Withdrawal').length,
-      batches: soldCount,
+      batches: salesSnap.size,
       compliance: 98
     })
   }
 
   const loadConsultStatus = async (uid) => {
-    const q = query(
-      collection(db, 'consultationRequests'),
-      where('farmerId', '==', uid)
-    )
-    const snapshot = await getDocs(q)
-    
+    const snapshot = await getDocs(query(collection(db, 'consultationRequests'), where('farmerId', '==', uid)))
     if (!snapshot.empty) {
       const requests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
       requests.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0))
       const latest = requests[0]
-      
-      const animalQ = query(collection(db, 'animals'), where('farmerId', '==', uid), where('animalId', '==', latest.animalId))
-      const animalSnap = await getDocs(animalQ)
+      const animalSnap = await getDocs(query(collection(db, 'animals'), where('farmerId', '==', uid), where('animalId', '==', latest.animalId)))
       const animalData = animalSnap.empty ? null : animalSnap.docs[0].data()
-      
       setConsultStatus({
         status: latest.status === 'accepted' ? 'Accepted' : 'Pending',
         animalId: latest.animalId,
@@ -120,8 +97,7 @@ function FarmerDashboard() {
 
   const generateAnimalId = async (species) => {
     if (!user || !species) return ''
-    const q = query(collection(db, 'animals'), where('farmerId', '==', user.uid), where('species', '==', species))
-    const snapshot = await getDocs(q)
+    const snapshot = await getDocs(query(collection(db, 'animals'), where('farmerId', '==', user.uid), where('species', '==', species)))
     return `${species}-${String(snapshot.size + 1).padStart(2, '0')}`
   }
 
@@ -132,7 +108,6 @@ function FarmerDashboard() {
   const handleAddAnimal = async (e) => {
     e.preventDefault()
     const speciesMap = { 'COW': '🐄 Cattle (Cow)', 'CHICKEN': '🐔 Poultry (Chicken)', 'GOAT': '🐐 Goat' }
-    
     await addDoc(collection(db, 'animals'), {
       farmerId: user.uid,
       animalId: formData.animalId,
@@ -142,7 +117,6 @@ function FarmerDashboard() {
       lastTreatment: formData.lastTreatment || null,
       createdAt: serverTimestamp()
     })
-
     setShowAddModal(false)
     setFormData({ species: '', animalId: '', status: 'Healthy', lastTreatment: '' })
     loadAnimals(user.uid)
@@ -158,7 +132,6 @@ function FarmerDashboard() {
       status: 'pending',
       createdAt: serverTimestamp()
     })
-
     alert('Consultation request submitted successfully!')
     setShowConsultModal(false)
     setConsultData({ animalId: '', urgency: '', symptoms: '' })
@@ -166,43 +139,34 @@ function FarmerDashboard() {
 
   return (
     <div className="dashboard-container">
+      <NotificationPanel userId={user?.uid} showPanel={showNotifications} setShowPanel={setShowNotifications} />
       <div className="bg-pattern"></div>
 
-      {/* Sidebar */}
       <aside className={`sidebar ${showSidebar ? 'active' : ''}`}>
         <div className="logo">
           <h1>🌾 VetSafe Tracker</h1>
           <p>Livestock Dashboard</p>
         </div>
-
         <nav>
           <ul className="nav-menu">
             <li><a href="#" className="nav-link active"><i className="fas fa-chart-line"></i><span>Dashboard</span></a></li>
-            <li><a href="#" className="nav-link" onClick={() =>navigate('/farmer-animals')}><i className="fas fa-paw"></i><span>My Animals</span></a></li>
-            <li><a href="#" className="nav-link" onClick={() =>navigate('/farmer-treatments')}><i className="fas fa-pills"></i><span>Treatments</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => navigate('/farmer-animals')}><i className="fas fa-paw"></i><span>My Animals</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => navigate('/farmer-treatments')}><i className="fas fa-pills"></i><span>Treatments</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => navigate('/doctor-consultation')}><i className="fas fa-user-md"></i><span>Doctor Consultation</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => navigate('/farmer-prescriptions')}><i className="fas fa-prescription"></i><span>My Prescriptions</span></a></li>
-            <li><a href="#" className="nav-link" onClick={() =>navigate('/farmer-certificate')}><i className="fas fa-qrcode"></i><span>Certificate</span></a></li>
-            <li><a href="#" className="nav-link" onClick={() =>navigate('/farmer-sold-history')}><i className="fas fa-shopping-cart"></i><span>Product Sold</span></a></li>
-            <li><a href="#" className="nav-link"  onClick={() => {
-            const chatbotButton = document.querySelector('.vc-fab')
-            if (chatbotButton) chatbotButton.click()
-          }}><i className="fas fa-clipboard-list"></i><span>Chatbot</span></a></li>
-            <li><a href="#" className="nav-link"><i className="fas fa-bell"></i><span>Notifications</span></a></li>
-            <li><a href="#" className="nav-link" onClick={async () => {
-              await signOut(auth)
-              navigate('/')
-            }}><i className="fas fa-cog"></i><span>Logout</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => navigate('/farmer-certificate')}><i className="fas fa-qrcode"></i><span>Certificate</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => navigate('/farmer-sold-history')}><i className="fas fa-shopping-cart"></i><span>Product Sold</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => { const btn = document.querySelector('.vc-fab'); if (btn) btn.click() }}><i className="fas fa-clipboard-list"></i><span>Chatbot</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => { setShowNotifications(true); setShowSidebar(false) }}><i className="fas fa-bell"></i><span>Notifications</span></a></li>
+            <li><a href="#" className="nav-link" onClick={async () => { await signOut(auth); navigate('/') }}><i className="fas fa-cog"></i><span>Logout</span></a></li>
           </ul>
         </nav>
       </aside>
 
-      {/* Mobile Menu Toggle */}
       <button className="menu-toggle" onClick={() => setShowSidebar(!showSidebar)}>
         <i className="fas fa-bars"></i>
       </button>
 
-      {/* Main Content */}
       <main className="main-content">
         <header className="header">
           <div className="header-left">
@@ -210,15 +174,11 @@ function FarmerDashboard() {
             <p>Here's what's happening with your livestock today</p>
           </div>
           <div className="header-right">
-            <button className="header-btn btn-secondary" onClick={async () => {
-              await signOut(auth)
-              navigate('/')
-            }}><i className="fas fa-download"></i>Logout</button>
+            <button className="header-btn btn-secondary" onClick={async () => { await signOut(auth); navigate('/') }}><i className="fas fa-download"></i>Logout</button>
             <button className="header-btn btn-primary" onClick={() => setShowAddModal(true)}><i className="fas fa-plus"></i>Add Animal</button>
           </div>
         </header>
 
-        {/* Stats Grid */}
         <section className="stats-grid">
           <div className="stat-card" onClick={() => navigate('/farmer-animals')}>
             <div className="stat-header">
@@ -233,7 +193,7 @@ function FarmerDashboard() {
             </div>
           </div>
 
-          <div className="stat-card" onClick={() =>navigate('/withdrawal-animals')}>
+          <div className="stat-card" onClick={() => navigate('/withdrawal-animals')}>
             <div className="stat-header">
               <div className="stat-icon"><i className="fas fa-syringe"></i></div>
               <div className="stat-badge badge-warning"><i className="fas fa-exclamation-circle"></i> Active</div>
@@ -246,7 +206,7 @@ function FarmerDashboard() {
             </div>
           </div>
 
-          <div className="stat-card" onClick={() =>navigate('/farmer-sold-history')}>
+          <div className="stat-card" onClick={() => navigate('/farmer-sold-history')}>
             <div className="stat-header">
               <div className="stat-icon"><i className="fas fa-box"></i></div>
               <div className="stat-badge badge-success"><i className="fas fa-check"></i> Safe</div>
@@ -259,10 +219,7 @@ function FarmerDashboard() {
             </div>
           </div>
 
-          <div className="stat-card" onClick={() => {
-            const chatbotButton = document.querySelector('.vc-fab')
-            if (chatbotButton) chatbotButton.click()
-          }}>
+          <div className="stat-card" onClick={() => { const btn = document.querySelector('.vc-fab'); if (btn) btn.click() }}>
             <div className="stat-header">
               <div className="stat-icon"><i className="fas fa-robot"></i></div>
               <div className="stat-badge badge-success"><i className="fas fa-comment-dots"></i> Online</div>
@@ -274,6 +231,7 @@ function FarmerDashboard() {
               <span style={{fontSize: '0.875rem', color: 'var(--text-muted)', cursor: 'pointer'}}>Chat Now →</span>
             </div>
           </div>
+
           <div className="stat-card">
             <div className="stat-header">
               <div className="stat-icon"><i className="fas fa-user-md"></i></div>
@@ -294,9 +252,7 @@ function FarmerDashboard() {
             </div>
           </div>
         </section>
-        
 
-        {/* Quick Actions */}
         <section className="quick-actions">
           <h3 className="section-title"><i className="fas fa-bolt"></i>Quick Actions</h3>
           <div className="actions-grid">
@@ -310,32 +266,21 @@ function FarmerDashboard() {
               <div className="action-title">Request Consultation</div>
               <div className="action-desc">Connect with veterinarian</div>
             </div>
-            <div className="action-card"onClick={() =>navigate('/farmer-certificate')}>
+            <div className="action-card" onClick={() => navigate('/farmer-certificate')}>
               <div className="action-icon"><i className="fas fa-box-open"></i></div>
               <div className="action-title">Create Certificate</div>
               <div className="action-desc">Generate product Certificate</div>
             </div>
-            {/* <div className="action-card">
-              <div className="action-icon"><i className="fas fa-qrcode"></i></div>
-              <div className="action-title">Scan QR Code</div>
-              <div className="action-desc">Verify batch information</div>
-            </div> */}
           </div>
         </section>
 
-        {/* Recent Animals */}
         <section className="data-section">
           <h3 className="section-title"><i className="fas fa-paw"></i>Recent Animals</h3>
           <div className="table-container">
             <table>
               <thead>
                 <tr>
-                  <th>Animal ID</th>
-                  <th>Species</th>
-                  <th>Status</th>
-                  <th>Last Treatment</th>
-                  <th>Withdrawal Ends</th>
-                  <th>Actions</th>
+                  <th>Animal ID</th><th>Species</th><th>Status</th><th>Last Treatment</th><th>Withdrawal Ends</th><th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -363,7 +308,6 @@ function FarmerDashboard() {
           </div>
         </section>
 
-        {/* Notifications */}
         <section className="notifications-panel">
           <h3 className="section-title"><i className="fas fa-bell"></i>Recent Notifications</h3>
           <div style={{textAlign: 'center', padding: '2rem', color: 'var(--text-muted)'}}>
@@ -373,7 +317,6 @@ function FarmerDashboard() {
         </section>
       </main>
 
-      {/* Add Animal Modal */}
       {showAddModal && (
         <div className="modal active">
           <div className="modal-content">
@@ -416,7 +359,6 @@ function FarmerDashboard() {
         </div>
       )}
 
-      {/* Consultation Modal */}
       {showConsultModal && (
         <div className="modal active">
           <div className="modal-content">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, signOut, doc, getDoc, collection, query, where, getDocs } from '../../config/firebase'
+import NotificationPanel from '../NotificationPanel'
 import './DoctorDashboard.css'
 
 export default function DoctorDashboard() {
@@ -8,6 +9,7 @@ export default function DoctorDashboard() {
   const [user, setUser] = useState(null)
   const [userData, setUserData] = useState(null)
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, medicines: 0, urgent: 0, unique: 0 })
   const [requests, setRequests] = useState([])
 
@@ -62,6 +64,7 @@ export default function DoctorDashboard() {
 
   return (
     <div className="dashboard-container">
+      <NotificationPanel userId={user?.uid} showPanel={showNotifications} setShowPanel={setShowNotifications} />
       <div className="bg-pattern"></div>
 
       <aside className={`sidebar ${showSidebar ? 'active' : ''}`}>
@@ -76,11 +79,8 @@ export default function DoctorDashboard() {
             <li><a href="#" className="nav-link"onClick={() =>navigate('/consultation-requests')}><i className="fas fa-inbox"></i><span>Consultation Requests</span></a></li>
             <li><a href="#" className="nav-link" onClick={() =>navigate('/doctor-prescriptions')}><i className="fas fa-pills"></i><span>Prescription History</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => navigate('/doctor-analytics')}><i className="fas fa-chart-bar"></i><span>Analytics</span></a></li>
-            <li><a href="#" className="nav-link"><i className="fas fa-bell"></i><span>Notifications</span></a></li>
-            <li><a href="#" className="nav-link" onClick={async () => {
-              await signOut(auth)
-              navigate('/')
-            }}><i className="fas fa-cog"></i><span>Logout</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => { setShowNotifications(true); setShowSidebar(false) }}><i className="fas fa-bell"></i><span>Notifications</span></a></li>
+            <li><a href="#" className="nav-link" onClick={async () => { await signOut(auth); navigate('/') }}><i className="fas fa-cog"></i><span>Logout</span></a></li>
           </ul>
         </nav>
       </aside>

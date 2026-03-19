@@ -455,7 +455,7 @@
 @media (max-width: 640px) {
   .doctor-login-body {
     padding: 1rem;
-    align-items: flex-start;
+    align-items: center;
     padding-top: 2rem;
   }
 

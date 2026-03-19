@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, collection, query, where, getDocs, doc, updateDoc } from '../../config/firebase'
 import { Timestamp } from 'firebase/firestore'
+import { notifyTreatmentCompleted } from '../../services/notificationService'
 import './Treatments.css'
 
 function Treatments() {
@@ -86,6 +87,9 @@ function Treatments() {
       animalsSnap.forEach(animalDoc => {
         updateDoc(doc(db, 'animals', animalDoc.id), { status: 'Withdrawal' })
       })
+      
+      // Notify farmer that treatment has been marked as given
+      await notifyTreatmentCompleted(treatment.farmerId, treatment.animalId)
 
       if (user) loadTreatments(user.uid)
     } catch (error) {

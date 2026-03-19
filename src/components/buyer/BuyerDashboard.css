@@ -143,7 +143,7 @@
 
 .menu-toggle {
   position: fixed;
-  top: 1rem;
+  top: 3rem;
   left: 1rem;
   z-index: 1000;
   background: var(--primary-gradient);
@@ -552,11 +552,17 @@ td {
     align-items: center;
     justify-content: center;
   }
+   .logo {                        /* ← ADD THIS */
+    padding-top: 1rem;
+    padding-left: 4.5rem;
+  }
 
   .header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    padding-top: 4rem; /* ← add this so content clears the toggle */
+    margin-top: 0;  
   }
 
   .header-right {

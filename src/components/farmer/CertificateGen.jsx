@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, collection, query, where, getDocs, addDoc, serverTimestamp } from '../../config/firebase'
+import { notifyWithdrawalActive } from '../../services/notificationService'
 import html2canvas from 'html2canvas'
 import './CertificateGen.css'
 
@@ -120,6 +121,8 @@ function CertificateGen() {
             const safeDate = new Date(injDate)
             safeDate.setDate(safeDate.getDate() + parseInt(t.withdrawalDays || 0))
             if (new Date() < safeDate) {
+              // Send notification about active withdrawal period
+              await notifyWithdrawalActive(user.uid, formData.animalId)
               setError(`Withdrawal period active until ${safeDate.toLocaleDateString()}`)
               setLoading(false)
               return
