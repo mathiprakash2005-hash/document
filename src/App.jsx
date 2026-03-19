@@ -14,6 +14,7 @@ import DoctorLogin from './components/doctor/DoctorLogin'
 import DoctorDashboard from './components/doctor/DoctorDashboard'
 import DoctorRegister from './components/doctor/DoctorRegister'
 import DoctorPrescriptions from './components/doctor/DoctorPrescriptions'
+import DoctorAnalytics from './components/doctor/DoctorAnalytics'
 import ApprovedPrescriptions from './components/doctor/ApprovedPrescriptions'
 import RejectedPrescriptions from './components/doctor/RejectedPrescriptions'
 import ConsultationRequests from './components/doctor/ConsultationRequests'
@@ -33,6 +34,7 @@ function AppContent() {
     '/doctor-register', 
     '/doctor-dashboard',
     '/doctor-prescriptions',
+    '/doctor-analytics',
     '/approved-prescriptions',
     '/rejected-prescriptions',
     '/consultation-requests',
@@ -61,6 +63,7 @@ function AppContent() {
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
         <Route path="/doctor-register" element={<DoctorRegister />} />
         <Route path="/doctor-prescriptions" element={<DoctorPrescriptions />} />
+        <Route path="/doctor-analytics" element={<DoctorAnalytics />} />
         <Route path="/approved-prescriptions" element={<ApprovedPrescriptions />} />
         <Route path="/rejected-prescriptions" element={<RejectedPrescriptions />} />
         <Route path="/consultation-requests" element={<ConsultationRequests />} />

@@ -62,7 +62,7 @@ export default function BuyerDashboard() {
             <li><a href="#" className="nav-link active"><i className="fas fa-chart-line"></i><span>Dashboard</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => navigate('/buyer-verify')}><i className="fas fa-certificate"></i><span>Verify Certificate</span></a></li>
             <li><a href="#" className="nav-link" onClick={() => document.getElementById('historySection')?.scrollIntoView({ behavior: 'smooth' })}><i className="fas fa-shopping-bag"></i><span>Purchase History</span></a></li>
-            <li><a href="#" className="nav-link" onClick={() => navigate('/')}><i className="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+            <li><a href="#" className="nav-link" onClick={handleLogout}><i className="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
           </ul>
         </nav>
       </aside>

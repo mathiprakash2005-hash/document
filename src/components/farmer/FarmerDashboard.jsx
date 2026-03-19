@@ -184,7 +184,10 @@ function FarmerDashboard() {
             <li><a href="#" className="nav-link" onClick={() => navigate('/farmer-prescriptions')}><i className="fas fa-prescription"></i><span>My Prescriptions</span></a></li>
             <li><a href="#" className="nav-link" onClick={() =>navigate('/farmer-certificate')}><i className="fas fa-qrcode"></i><span>Certificate</span></a></li>
             <li><a href="#" className="nav-link" onClick={() =>navigate('/farmer-sold-history')}><i className="fas fa-shopping-cart"></i><span>Product Sold</span></a></li>
-            <li><a href="#" className="nav-link" ><i className="fas fa-clipboard-list"></i><span>Compliance</span></a></li>
+            <li><a href="#" className="nav-link"  onClick={() => {
+            const chatbotButton = document.querySelector('.vc-fab')
+            if (chatbotButton) chatbotButton.click()
+          }}><i className="fas fa-clipboard-list"></i><span>Chatbot</span></a></li>
             <li><a href="#" className="nav-link"><i className="fas fa-bell"></i><span>Notifications</span></a></li>
             <li><a href="#" className="nav-link" onClick={async () => {
               await signOut(auth)
@@ -207,7 +210,10 @@ function FarmerDashboard() {
             <p>Here's what's happening with your livestock today</p>
           </div>
           <div className="header-right">
-            <button className="header-btn btn-secondary"><i className="fas fa-download"></i>Export Report</button>
+            <button className="header-btn btn-secondary" onClick={async () => {
+              await signOut(auth)
+              navigate('/')
+            }}><i className="fas fa-download"></i>Logout</button>
             <button className="header-btn btn-primary" onClick={() => setShowAddModal(true)}><i className="fas fa-plus"></i>Add Animal</button>
           </div>
         </header>
@@ -253,16 +259,19 @@ function FarmerDashboard() {
             </div>
           </div>
 
-          <div className="stat-card">
+          <div className="stat-card" onClick={() => {
+            const chatbotButton = document.querySelector('.vc-fab')
+            if (chatbotButton) chatbotButton.click()
+          }}>
             <div className="stat-header">
-              <div className="stat-icon"><i className="fas fa-chart-pie"></i></div>
-              <div className="stat-badge badge-success"><i className="fas fa-star"></i> Excellent</div>
+              <div className="stat-icon"><i className="fas fa-robot"></i></div>
+              <div className="stat-badge badge-success"><i className="fas fa-comment-dots"></i> Online</div>
             </div>
-            <div className="stat-value">{stats.compliance}%</div>
-            <div className="stat-label">Compliance Score</div>
+            <div className="stat-value" style={{fontSize: '1.5rem'}}>VetBot AI</div>
+            <div className="stat-label">AI Assistant</div>
             <div className="stat-footer">
-              <span className="stat-change" style={{color: 'var(--success)'}}><i className="fas fa-arrow-up"></i>+5% This Month</span>
-              <span style={{fontSize: '0.875rem', color: 'var(--text-muted)'}}>Details →</span>
+              <span className="stat-change" style={{color: 'var(--success)'}}><i className="fas fa-microphone"></i>Voice & Tamil Support</span>
+              <span style={{fontSize: '0.875rem', color: 'var(--text-muted)', cursor: 'pointer'}}>Chat Now →</span>
             </div>
           </div>
           <div className="stat-card">

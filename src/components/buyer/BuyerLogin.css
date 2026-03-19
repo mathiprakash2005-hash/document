@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .buyer-login-body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
@@ -36,6 +40,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  line-height: 1.4;
 }
 
 .header .emoji {
@@ -45,6 +50,7 @@
 .header p {
   color: #666;
   font-size: 16px;
+  line-height: 1.6;
 }
 
 .google-btn {
@@ -63,6 +69,7 @@
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+  min-height: 48px;
 }
 
 .google-btn:hover {
@@ -70,6 +77,16 @@
   border-color: #a855f7;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+}
+
+.google-btn:active {
+  transform: translateY(0);
+}
+
+.google-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .divider {
@@ -116,6 +133,7 @@
   border-radius: 10px;
   font-size: 16px;
   transition: all 0.3s ease;
+  min-height: 48px;
 }
 
 .form-group input:focus {
@@ -131,6 +149,15 @@
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 20px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-password:active {
+  opacity: 0.7;
 }
 
 .forgot-password {
@@ -143,10 +170,18 @@
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
+  display: inline-block;
+  padding: 8px;
+  min-height: 44px;
+  line-height: 1.8;
 }
 
 .forgot-password a:hover {
   text-decoration: underline;
+}
+
+.forgot-password a:active {
+  opacity: 0.8;
 }
 
 .submit-btn {
@@ -160,6 +195,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 48px;
 }
 
 .submit-btn:disabled {
@@ -177,27 +213,30 @@
   transform: translateY(0);
 }
 
-.google-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
 .register-link {
   text-align: center;
   margin-top: 20px;
   color: #666;
   font-size: 14px;
+  line-height: 1.6;
 }
 
 .register-link a {
   color: #a855f7;
   text-decoration: none;
   font-weight: 600;
+  display: inline-block;
+  padding: 4px 8px;
+  min-height: 44px;
+  line-height: 2;
 }
 
 .register-link a:hover {
   text-decoration: underline;
+}
+
+.register-link a:active {
+  opacity: 0.8;
 }
 
 .message {
@@ -206,6 +245,7 @@
   margin-bottom: 15px;
   font-size: 14px;
   display: none;
+  line-height: 1.6;
 }
 
 .message.show {
@@ -229,8 +269,246 @@
   color: #3c3;
 }
 
-@media (max-width: 480px) {
+/* Tablet Landscape */
+@media (max-width: 1024px) {
+  .buyer-login-body {
+    padding: 20px;
+  }
+
   .login-container {
-    padding: 30px 25px;
+    max-width: 500px;
+    padding: 40px;
+  }
+}
+
+/* Tablet Portrait */
+@media (max-width: 768px) {
+  .buyer-login-body {
+    padding: 16px;
+  }
+
+  .login-container {
+    max-width: 100%;
+    padding: 32px;
+    border-radius: 16px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .header p {
+    font-size: 15px;
+  }
+
+  .google-btn,
+  .submit-btn {
+    padding: 15px;
+    font-size: 15px;
+  }
+
+  .form-group input {
+    padding: 15px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .buyer-login-body {
+    padding: 12px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .login-container {
+    padding: 28px 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    line-height: 1.4;
+    flex-wrap: wrap;
+  }
+
+  .header .emoji {
+    font-size: 22px;
+  }
+
+  .header p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .google-btn {
+    padding: 14px 12px;
+    font-size: 15px;
+    min-height: 48px;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .divider {
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    padding: 14px 12px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+
+  .toggle-password {
+    right: 12px;
+    font-size: 18px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .forgot-password {
+    margin-bottom: 16px;
+  }
+
+  .forgot-password a {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .submit-btn {
+    padding: 14px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+
+  .register-link {
+    margin-top: 16px;
+    font-size: 14px;
+  }
+
+  .message {
+    padding: 10px 12px;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+  .buyer-login-body {
+    padding: 8px;
+    padding-top: 30px;
+  }
+
+  .login-container {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    gap: 8px;
+  }
+
+  .header .emoji {
+    font-size: 20px;
+  }
+
+  .header p {
+    font-size: 13px;
+  }
+
+  .google-btn {
+    padding: 13px 10px;
+    font-size: 14px;
+    min-height: 48px;
+    gap: 6px;
+  }
+
+  .divider {
+    margin: 18px 0;
+    font-size: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input {
+    padding: 13px 10px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+
+  .toggle-password {
+    right: 10px;
+    font-size: 18px;
+  }
+
+  .forgot-password a {
+    font-size: 13px;
+  }
+
+  .submit-btn {
+    padding: 13px;
+    font-size: 14px;
+    min-height: 48px;
+  }
+
+  .register-link {
+    font-size: 13px;
+  }
+
+  .message {
+    padding: 10px;
+    font-size: 12px;
+  }
+}
+
+/* iPhone SE and smaller (375px) */
+@media (max-width: 375px) {
+  .login-container {
+    padding: 20px 16px;
+  }
+
+  .header h1 {
+    font-size: 17px;
+  }
+
+  .header p {
+    font-size: 12px;
+  }
+
+  .google-btn,
+  .submit-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .form-group input {
+    padding: 12px;
   }
 }

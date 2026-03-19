@@ -56,10 +56,12 @@ export default function VetChatbot() {
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [currentSpeakingIndex, setCurrentSpeakingIndex] = useState(null)
+  const [audioLoading, setAudioLoading] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const recognitionRef = useRef(null)
   const speechSynthesisRef = useRef(null)
+  const audioRef = useRef(null)
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -139,7 +141,7 @@ export default function VetChatbot() {
       // Stop any ongoing speech
       window.speechSynthesis.cancel()
 
-      setIsSpeaking(true)
+      setAudioLoading(true)
       setCurrentSpeakingIndex(messageIndex)
 
       // Wait for voices to load
@@ -187,15 +189,22 @@ export default function VetChatbot() {
         utterance.pitch = 1
         utterance.volume = 1
 
+        utterance.onstart = () => {
+          setAudioLoading(false)
+          setIsSpeaking(true)
+        }
+
         utterance.onend = () => {
           setIsSpeaking(false)
           setCurrentSpeakingIndex(null)
+          setAudioLoading(false)
         }
 
         utterance.onerror = (error) => {
           console.error('Speech synthesis error:', error)
           setIsSpeaking(false)
           setCurrentSpeakingIndex(null)
+          setAudioLoading(false)
           
           // Try Google TTS as fallback
           if (hasTamil) {
@@ -208,6 +217,7 @@ export default function VetChatbot() {
         console.error('Voice loading error:', error)
         setIsSpeaking(false)
         setCurrentSpeakingIndex(null)
+        setAudioLoading(false)
       }
     } else {
       alert('Text-to-speech is not supported in your browser.')
@@ -217,7 +227,13 @@ export default function VetChatbot() {
   // Google TTS API fallback for Tamil
   const playGoogleTTS = async (text, messageIndex) => {
     try {
-      setIsSpeaking(true)
+      // Stop any existing audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+
+      setAudioLoading(true)
       setCurrentSpeakingIndex(messageIndex)
 
       const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000'
@@ -240,17 +256,27 @@ export default function VetChatbot() {
       const audioBlob = await response.blob()
       const audioUrl = URL.createObjectURL(audioBlob)
       const audio = new Audio(audioUrl)
+      audioRef.current = audio
+
+      audio.onloadeddata = () => {
+        setAudioLoading(false)
+        setIsSpeaking(true)
+      }
 
       audio.onended = () => {
         setIsSpeaking(false)
         setCurrentSpeakingIndex(null)
+        setAudioLoading(false)
         URL.revokeObjectURL(audioUrl)
+        audioRef.current = null
       }
 
       audio.onerror = () => {
         setIsSpeaking(false)
         setCurrentSpeakingIndex(null)
+        setAudioLoading(false)
         URL.revokeObjectURL(audioUrl)
+        audioRef.current = null
       }
 
       await audio.play()
@@ -258,17 +284,29 @@ export default function VetChatbot() {
       console.error('Google TTS error:', error)
       setIsSpeaking(false)
       setCurrentSpeakingIndex(null)
+      setAudioLoading(false)
+      audioRef.current = null
       alert('Unable to play Tamil audio. Please check your connection.')
     }
   }
 
   // Stop speech
   const stopSpeaking = () => {
+    // Stop browser speech synthesis
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
     }
+    
+    // Stop Google TTS audio
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+      audioRef.current = null
+    }
+    
     setIsSpeaking(false)
     setCurrentSpeakingIndex(null)
+    setAudioLoading(false)
   }
 
   // ── Send message via backend proxy ──
@@ -481,9 +519,15 @@ export default function VetChatbot() {
                                 speakText(msg.content, idx)
                               }
                             }}
-                            title={currentSpeakingIndex === idx ? 'Stop speaking' : 'Read aloud in Tamil'}
+                            disabled={audioLoading && currentSpeakingIndex === idx}
+                            title={currentSpeakingIndex === idx && audioLoading ? 'Loading audio...' : currentSpeakingIndex === idx ? 'Stop speaking' : 'Read aloud in Tamil'}
                           >
-                            {currentSpeakingIndex === idx ? (
+                            {currentSpeakingIndex === idx && audioLoading ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="vc-loading-spinner">
+                                <circle cx="12" cy="12" r="10" opacity="0.25" />
+                                <path d="M12 2a10 10 0 0 1 10 10" opacity="0.75" />
+                              </svg>
+                            ) : currentSpeakingIndex === idx ? (
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                 <rect x="6" y="4" width="4" height="16" />
                                 <rect x="14" y="4" width="4" height="16" />

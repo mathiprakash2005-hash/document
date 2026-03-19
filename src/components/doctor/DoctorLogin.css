@@ -6,6 +6,7 @@
   align-items: center;
   padding: 20px;
   font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
 }
 
 .login-container {
@@ -16,6 +17,7 @@
   border-radius: 24px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.5s ease-out;
+  position: relative;
 }
 
 @keyframes slideIn {
@@ -37,6 +39,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  line-height: 1.3;
 }
 
 .header .emoji {
@@ -48,6 +51,7 @@
   color: #64748b;
   font-weight: 400;
   text-align: center;
+  line-height: 1.6;
 }
 
 .form-group {
@@ -72,6 +76,8 @@
   transition: all 0.3s ease;
   font-family: 'Poppins', sans-serif;
   background: #f8fafc;
+  min-height: 48px;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -137,6 +143,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  min-height: 48px;
 }
 
 .login-btn:hover:not(:disabled) {
@@ -146,6 +153,17 @@
 
 .login-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .login-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+  }
+  
+  .login-btn:active:not(:disabled) {
+    transform: scale(0.98);
+  }
 }
 
 .login-btn:disabled {
@@ -209,6 +227,7 @@
   justify-content: center;
   gap: 12px;
   margin-bottom: 20px;
+  min-height: 48px;
 }
 
 .google-btn:hover:not(:disabled) {
@@ -221,6 +240,19 @@
 .google-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .google-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+    background: white;
+  }
+  
+  .google-btn:active:not(:disabled) {
+    transform: scale(0.98);
+    background: #f8fafc;
+  }
 }
 
 .google-icon {
@@ -302,6 +334,7 @@
   max-width: 400px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.3s ease;
+  position: relative;
 }
 
 .modal-header {
@@ -342,6 +375,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 44px;
 }
 
 .modal-btn.primary {
@@ -363,17 +397,344 @@
   background: #e2e8f0;
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .modal-btn.primary:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .modal-btn.primary:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  
+  .modal-btn.secondary:hover {
+    background: #f1f5f9;
+  }
+  
+  .modal-btn.secondary:active {
+    background: #e2e8f0;
+    transform: scale(0.98);
+  }
+}
+
 .modal-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-@media (max-width: 480px) {
+/* Tablets Portrait */
+@media (max-width: 768px) {
+  .doctor-login-body {
+    padding: 16px;
+  }
+
   .login-container {
-    padding: 35px 30px;
+    padding: 40px 35px;
+    border-radius: 20px;
+  }
+
+  .header h1 {
+    font-size: 1.875rem;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
+
+  .form-group input {
+    font-size: 0.9375rem;
+  }
+
+  .modal-content {
+    width: 92%;
+    padding: 30px 25px;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 640px) {
+  .doctor-login-body {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .login-container {
+    padding: 1.75rem 1.5rem;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .header {
+    margin-bottom: 1.75rem;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+    gap: 8px;
+  }
+
+  .header .emoji {
+    font-size: 1.75rem;
+  }
+
+  .header p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    padding: 12px 14px;
+    font-size: 0.875rem;
+    min-height: 48px;
+  }
+
+  .password-toggle {
+    right: 14px;
+    font-size: 1.125rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .forgot-password {
+    margin-bottom: 1rem;
+  }
+
+  .forgot-password a {
+    font-size: 0.8125rem;
+    display: inline-block;
+    padding: 0.5rem;
+    margin: -0.5rem;
+  }
+
+  .login-btn {
+    padding: 13px;
+    font-size: 0.9375rem;
+    min-height: 48px;
+  }
+
+  .divider {
+    margin: 1.25rem 0;
+    font-size: 0.8125rem;
+  }
+
+  .google-btn {
+    padding: 12px;
+    font-size: 0.9375rem;
+    gap: 10px;
+    margin-bottom: 1rem;
+    min-height: 48px;
+  }
+
+  .google-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .register-link {
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .message {
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    border-radius: 8px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1.5rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-header h3 {
+    font-size: 1.375rem;
+  }
+
+  .modal-header p {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 13px;
+    font-size: 0.9375rem;
+    min-height: 48px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+  .doctor-login-body {
+    padding: 0.75rem;
+    padding-top: 1.5rem;
+  }
+
+  .login-container {
+    padding: 1.5rem 1.25rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    gap: 6px;
+  }
+
+  .header .emoji {
+    font-size: 1.5rem;
+  }
+
+  .header p {
+    font-size: 0.8125rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.875rem;
+  }
+
+  .form-group label {
+    font-size: 0.8125rem;
+  }
+
+  .form-group input {
+    padding: 11px 12px;
+    font-size: 0.875rem;
+    border-radius: 10px;
+  }
+
+  .password-toggle {
+    right: 12px;
+    font-size: 1rem;
+  }
+
+  .login-btn {
+    padding: 12px;
+    font-size: 0.875rem;
+    border-radius: 10px;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border-width: 2.5px;
+  }
+
+  .divider {
+    margin: 1rem 0;
+    font-size: 0.75rem;
+  }
+
+  .google-btn {
+    padding: 11px;
+    font-size: 0.875rem;
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .google-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .register-link {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .message {
+    padding: 9px 12px;
+    font-size: 0.8125rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1.25rem 1rem;
+    border-radius: 14px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .modal-header p {
+    font-size: 0.75rem;
+  }
+
+  .modal-buttons {
+    gap: 0.625rem;
+    margin-top: 1rem;
+  }
+
+  .modal-btn {
+    padding: 11px;
+    font-size: 0.875rem;
+    border-radius: 8px;
+  }
+}
+
+/* Landscape Orientation for Small Devices */
+@media (max-width: 768px) and (orientation: landscape) {
+  .doctor-login-body {
+    padding: 1rem;
+    align-items: center;
+  }
+
+  .login-container {
+    padding: 1.5rem 2rem;
+    max-width: 500px;
+  }
+
+  .header {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.875rem;
+  }
+
+  .modal-content {
+    max-width: 450px;
+  }
+}
+
+/* Ensure no horizontal scroll */
+@media (max-width: 640px) {
+  * {
+    max-width: 100%;
   }
   
-  .header h2 {
-    font-size: 1.6rem;
+  .login-container,
+  .modal-content {
+    max-width: calc(100vw - 2rem);
   }
 }

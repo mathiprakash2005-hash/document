@@ -75,9 +75,12 @@ export default function DoctorDashboard() {
             <li><a href="#" className="nav-link active"><i className="fas fa-chart-line"></i><span>Dashboard</span></a></li>
             <li><a href="#" className="nav-link"onClick={() =>navigate('/consultation-requests')}><i className="fas fa-inbox"></i><span>Consultation Requests</span></a></li>
             <li><a href="#" className="nav-link" onClick={() =>navigate('/doctor-prescriptions')}><i className="fas fa-pills"></i><span>Prescription History</span></a></li>
-            <li><a href="#" className="nav-link"><i className="fas fa-chart-bar"></i><span>Analytics</span></a></li>
+            <li><a href="#" className="nav-link" onClick={() => navigate('/doctor-analytics')}><i className="fas fa-chart-bar"></i><span>Analytics</span></a></li>
             <li><a href="#" className="nav-link"><i className="fas fa-bell"></i><span>Notifications</span></a></li>
-            <li><a href="#" className="nav-link" onClick={()=>navigate('/')}><i className="fas fa-cog"></i><span>Logout</span></a></li>
+            <li><a href="#" className="nav-link" onClick={async () => {
+              await signOut(auth)
+              navigate('/')
+            }}><i className="fas fa-cog"></i><span>Logout</span></a></li>
           </ul>
         </nav>
       </aside>
@@ -93,8 +96,11 @@ export default function DoctorDashboard() {
             <p>Here's your consultation overview today</p>
           </div>
           <div className="header-right">
-            <button className="header-btn btn-secondary"><i className="fas fa-download"></i>Export Report</button>
-            <button className="header-btn btn-primary"><i className="fas fa-prescription"></i>New Prescription</button>
+            <button className="header-btn btn-secondary" onClick={async () => {
+              await signOut(auth)
+              navigate('/')
+            }}><i className="fas fa-download"></i>Logout</button>
+            <button className="header-btn btn-primary" onClick={() => navigate('/consultation-requests')}><i className="fas fa-prescription"></i>New Prescription</button>
           </div>
         </header>
 

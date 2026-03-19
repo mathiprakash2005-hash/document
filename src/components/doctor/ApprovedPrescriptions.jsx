@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, db, collection, getDocs, doc, getDoc } from '../../config/firebase'
-import './DoctorPrescriptions.css'
+import './ApprovedPrescriptions.css'
 
 export default function ApprovedPrescriptions() {
   const navigate = useNavigate()
